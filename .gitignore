@@ -1,0 +1,7 @@
+*.pyc
+*.pkl
+__pycache__
+.idea
+venv
+figures
+data
