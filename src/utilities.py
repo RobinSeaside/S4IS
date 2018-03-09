@@ -3,15 +3,21 @@ import numpy as np
 import openturns as ot
 from sklearn.neighbors import NearestNeighbors
 
+
 def calc_pf_statistics(pf_list):
     num_rep = len(pf_list)
-    pf_mcs = np.zeros(num_rep)
-    num_sim = np.zeros(num_rep)
+    pf_hat1 = np.zeros(num_rep)
+    pf_hat2 = np.zeros(num_rep)
+    num_sim1 = np.zeros(num_rep)
+    num_sim2 = np.zeros(num_rep)
     for i in range(num_rep):
         tmp_pf = pf_list[i]
-        pf_mcs[i] = tmp_pf['pf_hat']
-        num_sim[i] = tmp_pf['num_feval_total']
-    return np.mean(pf_mcs), np.std(pf_mcs, ddof=1)/np.mean(pf_mcs), np.mean(num_sim)
+        pf_hat1[i] = tmp_pf['pf_hat1']
+        pf_hat2[i] = tmp_pf['pf_hat2']
+        num_sim1[i] = tmp_pf['num_feval_total1']
+        num_sim2[i] = tmp_pf['num_feval_total2']
+    return (np.mean(pf_hat1), np.std(pf_hat1, ddof=1)/np.mean(pf_hat1), np.mean(num_sim1),
+            np.mean(pf_hat2), np.std(pf_hat2, ddof=1) / np.mean(pf_hat2), np.mean(num_sim2))
 
 
 def calc_pf_mcs(y, if_series):

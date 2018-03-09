@@ -42,7 +42,7 @@ random_seed = 2018
 # Hard model
 hard_model_hparams = {
     'model': lsf_mdp,
-    'constant': 4,
+    'constant': 5,
     'series': True  # if series or parallel
 }
 # Surrogate model
@@ -58,29 +58,32 @@ dist = ot.Normal(2)
 # Infill strategy
 infill_params_1 = {
     'candidate': 'uniform',    # 'uniform'
-    'num_pnt_re': 10000,
-    'num_neighbors': 5000,
-    'name': 'conv_comb',
-    'n_top': 1,
-    'decay_rate': None,
+    'name': 'conv_comb',   # support points in the boundary;
     'metric': 'euclidean',
-    'min_it': 5,
-    'max_it': 1000,
+    'n_top': 1,
+    'delta_pf': 0.01,
+    'decay_rate': None,
+    'num_pnt_init': 12,
+    'num_pnt_cand': 10000,
+    'min_it': 60,
+    'max_it': 10000
 }
 infill_params_2 = {
     'name': 'conv_comb_w',    # 'conv_comb'
-    'n_top': 1,
-    'decay_rate': None,
     'metric': 'euclidean',
-    'min_it': 5,
-    'max_it': 1000
+    'n_top': 1,
+    'delta_pf': 0.001,
+    'decay_rate': None,
+    'num_pnt_cand': 10000,
+    'min_it': 40,
+    'max_it': 10000
 }
 # Density estimation
 de_params = {
-    'name': 'GM-sklearn',
-    'n_components': 10,
+    'name': 'GM-mpp',
+    'n_components': 5,
     'max_iter': 1000,
-    'n_init': 2
+    'n_init': 1
 }
 # de_params = {
 #     'name': 'GM-w',
@@ -91,12 +94,7 @@ de_params = {
 
 # Analysis settings
 analysis_hparams = {
-    'num_rep': 10,
-    'num_pnt_init': 12,
-    'num_pnt_is': 100000,
-    'num_pnt_candidate': 100000,
-    'delta_pf_1': 0.001,
-    'delta_pf_2': 0.001,
+    'num_rep': 10
 }
 
 # ********************************** Main **********************************
@@ -132,8 +130,9 @@ if __name__ == '__main__':
                 S4IS_results = S4IS_d(hard_model_hparams, soft_model_hparams, dist, infill_params_1,
                                       infill_params_2, de_params, analysis_hparams, tmp_random_seed, verbose)
                 pf_list.append(S4IS_results)
-            pf_mean, cov, num_feval_total_mean = calc_pf_statistics(pf_list)
-            print('pf_mean={}, cov={}, num_feval_total={}'.format(pf_mean, cov, num_feval_total_mean))
+            pf_mean1, cov1, num_feval_total_mean1, pf_mean2, cov2, num_feval_total_mean2 = calc_pf_statistics(pf_list)
+            print('pf_mean1={}, cov1={}, num_feval_total1={}'.format(pf_mean1, cov1, num_feval_total_mean1))
+            print('pf_mean2={}, cov2={}, num_feval_total2={}'.format(pf_mean2, cov2, num_feval_total_mean2))
             tmp_save_dir = dir_demo + 'data/{}_{}_rep{}_{}.pkl'.format(soft_model_hparams['name'],
                                                                        infill_params_2['name'],
                                                                        analysis_hparams['num_rep'],

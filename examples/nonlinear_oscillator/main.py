@@ -58,34 +58,37 @@ dist = ot.ComposedDistribution(marginals)
 
 # Infill strategy
 infill_params_1 = {
+    'candidate': 'uniform',
     'name': 'conv_comb',
+    'metric': 'euclidean',
     'n_top': 1,
+    'delta_pf': 0.01,
     'decay_rate': None,
-    'min_it': 5,
+    'num_pnt_init': 12,
+    'num_pnt_cand': 10000,
+    'min_it': 15,
     'max_it': 1000
 }
 infill_params_2 = {
     'name': 'conv_comb_w',    # 'conv_comb'
+    'metric': 'euclidean',
     'n_top': 1,
+    'delta_pf': 0.001,
     'decay_rate': None,
+    'num_pnt_cand': 10000,
     'min_it': 5,
     'max_it': 1000
 }
 # Density estimation
 de_params = {
-    'name': 'GM-sklearn',
-    'n_components': 10,
+    'name': 'GM-mpp',
+    'n_components': 5,
     'max_iter': 1000,
-    'n_init': 2
+    'n_init': 1
 }
 # Analysis settings
 analysis_hparams = {
-    'num_rep': 10,
-    'num_pnt_init': 12,
-    'num_pnt_is': 100000,
-    'num_pnt_candidate': 100000,
-    'delta_pf_1': 0.001,
-    'delta_pf_2': 0.001,
+    'num_rep': 10
 }
 
 # ********************************** Main **********************************
@@ -121,8 +124,9 @@ if __name__ == '__main__':
                 S4IS_results = S4IS_d(hard_model_hparams, soft_model_hparams, dist, infill_params_1,
                                       infill_params_2, de_params, analysis_hparams, tmp_random_seed, verbose)
                 pf_list.append(S4IS_results)
-            pf_mean, cov, num_feval_total_mean = calc_pf_statistics(pf_list)
-            print('pf_mean={}, cov={}, num_feval_total={}'.format(pf_mean, cov, num_feval_total_mean))
+            pf_mean1, cov1, num_feval_total_mean1, pf_mean2, cov2, num_feval_total_mean2 = calc_pf_statistics(pf_list)
+            print('pf_mean1={}, cov1={}, num_feval_total1={}'.format(pf_mean1, cov1, num_feval_total_mean1))
+            print('pf_mean2={}, cov2={}, num_feval_total2={}'.format(pf_mean2, cov2, num_feval_total_mean2))
             tmp_save_dir = dir_demo + 'data/{}_{}_rep{}_{}.pkl'.format(soft_model_hparams['name'],
                                                                        infill_params_2['name'],
                                                                        analysis_hparams['num_rep'],
